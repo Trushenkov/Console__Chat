@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"ru.tds.consolechat","l":"Client"},{"p":"ru.tds.consolechat","l":"Main"},{"p":"ru.tds.consolechat","l":"Server"},{"p":"ru.tds.consolechat","l":"TCPConnection"},{"p":"ru.tds.consolechat","l":"TCPConnectionListener"}]
