@@ -26,13 +26,13 @@ public class Client implements TCPConnectionListener {
 
             System.out.println("Введите никнейм:");
             nickname = scan.nextLine();
+
             TCPConnection connection = new TCPConnection(this, ip, PORT, nickname);
 
             while (true) {
                 String msg = scan.nextLine();
                 if (msg.equals("/exit")) {
                     connection.disconnect();
-                    System.exit(0);
                 } else {
                     connection.sendString(msg);
                 }
@@ -56,7 +56,7 @@ public class Client implements TCPConnectionListener {
 
     @Override
     public void onDisconnect(TCPConnection tcpConnection) {
-        System.out.println("Соединение закрыто.");
+        System.out.println("Пользователь покинул чат.");
     }
 
     @Override
