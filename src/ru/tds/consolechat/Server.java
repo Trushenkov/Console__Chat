@@ -14,7 +14,7 @@ public class Server implements TCPConnectionListener {
     private final ArrayList<TCPConnection> connections = new ArrayList<>(); //arrayList соединений,подключенных к серверу
 
     Server() {
-        System.out.println("Server running");
+        System.out.println("Сервер запущен...");
 
         try (ServerSocket serverSocket = new ServerSocket(2445)) {
             while (true) {
@@ -23,32 +23,11 @@ public class Server implements TCPConnectionListener {
                 } catch (IOException e) {
                     System.out.println("TCPConnection exception :" + e);
                 }
+
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void onConnectionReady(TCPConnection tcpConnection) {
-        connections.add(tcpConnection);
-        sendToAllConnections("Новое подключение :" + tcpConnection);
-    }
-
-    @Override
-    public void onReceiveString(TCPConnection tcpConnection, String string) {
-        sendToAllConnections(string);
-    }
-
-    @Override
-    public void onDisconnect(TCPConnection tcpConnection) {
-        connections.remove(tcpConnection);
-        sendToAllConnections("Отключено соединение: " + tcpConnection);
-    }
-
-    @Override
-    public void onException(TCPConnection tcpConnection, IOException exception) {
-        System.out.println("TCPConnection exception :" + exception);
     }
 
     /**
@@ -61,6 +40,50 @@ public class Server implements TCPConnectionListener {
         for (TCPConnection connection : connections) {
             connection.sendString(value);
         }
+    }
+
+    @Override
+    public void onConnectionReady(TCPConnection tcpConnection) {
+        connections.add(tcpConnection);
+        if (connections.size() > 1) {
+            sendToAllConnections("Присоединился новый пользователь");
+        }
+        if (connections.size() == 1) {
+            sendToAllConnections("В чате " + connections.size() + " пользователь.");
+        }
+        if (connections.size() > 1 && connections.size() < 5) {
+            sendToAllConnections("В чате " + connections.size() + " пользователя.");
+        }
+        if (connections.size() >= 5 && connections.size() < 21) {
+            sendToAllConnections("В чате " + connections.size() + " пользователей.");
+        }
+    }
+
+    @Override
+    public void onReceiveString(TCPConnection tcpConnection, String string) {
+        sendToAllConnections(string);
+    }
+
+    @Override
+    public void onDisconnect(TCPConnection tcpConnection) {
+        connections.remove(tcpConnection);
+        sendToAllConnections("Отключено соединение: " + tcpConnection);
+
+        if (connections.size() == 1) {
+            sendToAllConnections("В чате " + connections.size() + " пользователь.");
+        }
+        if (connections.size() > 1 && connections.size() < 5) {
+            sendToAllConnections("В чате " + connections.size() + " пользователя.");
+        }
+        if (connections.size() > 5 && connections.size() < 21) {
+            sendToAllConnections("В чате " + connections.size() + " пользователей.");
+        }
+
+    }
+
+    @Override
+    public void onException(TCPConnection tcpConnection, IOException exception) {
+        System.out.println("TCPConnection exception :" + exception);
     }
 
 
