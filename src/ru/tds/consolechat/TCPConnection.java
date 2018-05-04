@@ -58,7 +58,7 @@ public class TCPConnection {
      *
      * @param value сообщение, которое нужно отправить
      */
-    public synchronized void sendString(String value) {
+    synchronized void sendString(String value) {
         try {
             if (nickname.equals("Сервер")) {
                 out.write(value + "\n");
@@ -77,7 +77,7 @@ public class TCPConnection {
     /**
      * Метод для отсоединения пользователя от сервера.
      */
-    public synchronized void disconnect() {
+    synchronized void disconnect() {
         thread.interrupt();
         try {
             socket.close();
