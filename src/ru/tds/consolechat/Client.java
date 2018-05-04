@@ -14,7 +14,7 @@ public class Client implements TCPConnectionListener {
 
     private String nickname;
 
-    Client() {
+    public Client() {
 
         Scanner scan = new Scanner(System.in);
         System.out.println("Введите IP для подключения к серверу.");
@@ -22,10 +22,10 @@ public class Client implements TCPConnectionListener {
 
         String ip = scan.nextLine();
 
-        try {
+        System.out.println("Введите никнейм:");
+        nickname = scan.nextLine();
 
-            System.out.println("Введите никнейм:");
-            nickname = scan.nextLine();
+        try {
 
             TCPConnection connection = new TCPConnection(this, ip, PORT, nickname);
 
@@ -49,7 +49,6 @@ public class Client implements TCPConnectionListener {
             System.out.println("Connection exception: " + e);
         }
     }
-
 
     @Override
     public void onConnectionReady(TCPConnection tcpConnection) {
