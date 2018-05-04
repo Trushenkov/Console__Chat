@@ -10,47 +10,48 @@ import java.net.Socket;
  */
 public class TCPConnection {
 
-    private final Socket socket;
+    private Socket socket;
 
-    private final Thread thread;
+    private Thread thread;
 
-    private final TCPConnectionListener eventListener;
+    private TCPConnectionListener eventListener;
 
-    private final BufferedReader in;
+    private BufferedReader in;
 
-    private final BufferedWriter out;
+    private BufferedWriter out;
 
-    private final String nickname;
+    private String nickname;
 
     TCPConnection(TCPConnectionListener eventListener, String ipAddress, int port, String nickname) throws IOException {
         this(eventListener, new Socket(ipAddress, port), nickname);
     }
 
-    TCPConnection(TCPConnectionListener eventListener, Socket socket, String nickname) throws IOException {
+    public TCPConnection(TCPConnectionListener eventListener, Socket socket, String nickname) throws IOException {
         this.socket = socket;
         this.nickname = nickname;
         this.eventListener = eventListener;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    eventListener.onConnectionReady(TCPConnection.this);
-                    while (!thread.isInterrupted()) {
-                        eventListener.onReceiveString(TCPConnection.this, in.readLine());
-                    }
-                } catch (IOException e) {
-                    eventListener.onException(TCPConnection.this, e);
-                } finally {
-                    eventListener.onDisconnect(TCPConnection.this);
+        thread = new Thread(() -> {
+            try {
+                eventListener.onConnectionReady(TCPConnection.this);
+                while (!thread.isInterrupted()) {
+                    eventListener.onReceiveString(TCPConnection.this, in.readLine());
                 }
+            } catch (IOException e) {
+                eventListener.onException(TCPConnection.this, e);
+            } finally {
+                eventListener.onDisconnect(TCPConnection.this);
             }
         });
 
 
         thread.start();
 
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 
     /**
