@@ -20,7 +20,7 @@ public class Main {
                 new Client();
                 break;
             } else {
-                System.out.println("Некорректный ввод.");
+                System.out. println("Некорректный ввод.");
             }
         }
     }
