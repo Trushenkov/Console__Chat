@@ -17,6 +17,7 @@ public class Server implements TCPConnectionListener {
         System.out.println("Сервер запущен...");
 
         try (ServerSocket serverSocket = new ServerSocket(2445)) {
+            //noinspection InfiniteLoopStatement
             while (true) {
                 try {
                     new TCPConnection(this, serverSocket.accept(), "Сервер");
@@ -45,18 +46,7 @@ public class Server implements TCPConnectionListener {
     @Override
     public void onConnectionReady(TCPConnection tcpConnection) {
         connections.add(tcpConnection);
-        if (connections.size() > 1) {
-            sendToAllConnections("Присоединился новый пользователь");
-        }
-        if (connections.size() == 1) {
-            sendToAllConnections("В чате " + connections.size() + " пользователь.");
-        }
-        if (connections.size() > 1 && connections.size() < 5) {
-            sendToAllConnections("В чате " + connections.size() + " пользователя.");
-        }
-        if (connections.size() >= 5 && connections.size() < 21) {
-            sendToAllConnections("В чате " + connections.size() + " пользователей.");
-        }
+        sendToAllConnections("Количество пользователей в чате : " + connections.size());
     }
 
     @Override
@@ -68,16 +58,7 @@ public class Server implements TCPConnectionListener {
     public void onDisconnect(TCPConnection tcpConnection) {
         connections.remove(tcpConnection);
         sendToAllConnections("Отключено соединение: " + tcpConnection);
-
-        if (connections.size() == 1) {
-            sendToAllConnections("В чате " + connections.size() + " пользователь.");
-        }
-        if (connections.size() > 1 && connections.size() < 5) {
-            sendToAllConnections("В чате " + connections.size() + " пользователя.");
-        }
-        if (connections.size() > 5 && connections.size() < 21) {
-            sendToAllConnections("В чате " + connections.size() + " пользователей.");
-        }
+        sendToAllConnections("Количество пользователей в чате : " + connections.size());
 
     }
 
@@ -85,6 +66,5 @@ public class Server implements TCPConnectionListener {
     public void onException(TCPConnection tcpConnection, IOException exception) {
         System.out.println("TCPConnection exception :" + exception);
     }
-
 
 }
