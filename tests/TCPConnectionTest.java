@@ -46,4 +46,39 @@ public class TCPConnectionTest {
         assertEquals(expectedValue, actualValue);
     }
 
+
+    @Test
+    public void getNickname() throws IOException {
+        TCPConnectionListener tcpConnectionListener = new TCPConnectionListener() {
+            @Override
+            public void onConnectionReady(TCPConnection tcpConnection) {
+
+            }
+
+            @Override
+            public void onReceiveString(TCPConnection tcpConnection, String string) {
+
+            }
+
+            @Override
+            public void onDisconnect(TCPConnection tcpConnection) {
+
+            }
+
+            @Override
+            public void onException(TCPConnection tcpConnection, IOException exception) {
+
+            }
+        };
+
+        String nickname = "dmitry";
+
+        TCPConnection tcpConnection = new TCPConnection(tcpConnectionListener, new Socket("192.168.0.9", 2445), nickname);
+
+        String actualValue = nickname;
+
+        String expectedValue = tcpConnection.getNickname();
+
+        assertEquals(expectedValue,actualValue);
+    }
 }
