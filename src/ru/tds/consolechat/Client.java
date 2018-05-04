@@ -10,9 +10,9 @@ import java.util.Scanner;
  */
 public class Client implements TCPConnectionListener {
 
-    private static final int PORT = 2445; //порт
+    private static final int PORT = 2445;
 
-    private String nickname; //никнейм
+    private String nickname;
 
     Client() {
 
@@ -29,12 +29,19 @@ public class Client implements TCPConnectionListener {
 
             TCPConnection connection = new TCPConnection(this, ip, PORT, nickname);
 
+            //noinspection InfiniteLoopStatement
             while (true) {
                 String msg = scan.nextLine();
-                if (msg.equals("/exit")) {
-                    connection.disconnect();
-                } else {
-                    connection.sendString(msg);
+                switch (msg) {
+                    case "exit":
+                        connection.disconnect();
+                        break;
+                    case "":
+                        System.err.println("Вы пытаетесь отправить пустое сообщение. Напишите что-нибудь");
+                        break;
+                    default:
+                        connection.sendString(msg);
+                        break;
                 }
             }
 
@@ -56,7 +63,7 @@ public class Client implements TCPConnectionListener {
 
     @Override
     public void onDisconnect(TCPConnection tcpConnection) {
-        System.out.println("Пользователь покинул чат.");
+        System.out.println("Вы покинули чат.");
     }
 
     @Override
